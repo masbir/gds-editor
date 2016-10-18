@@ -1,27 +1,24 @@
-# Laravel PHP Framework
+# Google Cloud Datastore Web Editor and CSV Importer
+ 
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+## Web Example
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+http://dns.lancerastaging.com/ 
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Set-up
 
-## Official Documentation
+Add the following lines to your .env file : 
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+```
+PROJECT_ID=GOOGLE_PROJECT_ID
+GDS_KEY_FILE=PATH_TO_JSON_KEY_FILE_UNDER_STORAGE
+```
 
-## Contributing
+## CSV Importer Command
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+In the project folder run ` php artisan datastore:import /path/to/csv datastore-kind-name --skip=0 --take=20`
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+ - replace `/path/to/csv` with the path to csv file. 
+ - replace `datastore-kind-name` with datastore [kind](https://cloud.google.com/appengine/docs/python/datastore/entities#Python_Kinds_and_identifiers) name
+ - `skip` (optional) - file reading starts on line. The default is 0 which means file be read from the beginning.
+ - `take` (optional) - number of lines to read after `skip`. default is null which means all lines after `skip` will be read.
