@@ -8,3 +8,4 @@ Homestead.yaml
 
 storage/keys/cloud-storage-experimental.json
 *.p12
+storage/keys/cloud-backup-04e9e57c5ccb.json
