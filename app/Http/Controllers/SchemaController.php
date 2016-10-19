@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\ImportCSVSession;
 use App\Http\Requests;
+use App\CSVHelper;
 
 class SchemaController extends Controller
 {
@@ -17,7 +18,10 @@ class SchemaController extends Controller
     {
         $kinds = $this->getCachedKinds();
 
-    	return view('schema.index', compact('kinds'));
+        $processing = \App\UploadDataCounter::getAllInProgressParsed();
+        //dd($processing);
+
+    	return view('schema.index', compact('kinds', 'processing'));
     }
 
     public function kind(Request $request, $name)
@@ -132,7 +136,7 @@ class SchemaController extends Controller
          
         return view("schema.columnMapping", compact('importSession', 'properties')); 
     }
-
+        //prepare mapping
     public function postMapImportedCSV(Request $request)
     {
 
@@ -147,29 +151,37 @@ class SchemaController extends Controller
         //retrieve data from session
         $importSession = ImportCSVSession::fromSession($request);  
 
+        //get mapped data
         $submission_data = [];
-         if ( ($handle = fopen($importSession->full_path_csv, "r")) !== FALSE) {
-            try{
-                $line_counter = 1;
-                while (($line = fgetcsv($handle, 3000, ",")) !== false) {
-                    if(($importSession->hasHeader && $line_counter > 1) || (!$importSession->hasHeader)){
-                        $mapped_line = [];
-                        foreach($mapped_assoc as $property_name => $column_number){
-                            if(isset($line[$column_number])){
-                                $mapped_line[$property_name] = $line[$column_number];    
-                            }
-                        }
-                        $submission_data[] = $mapped_line;
+        CSVHelper::readFile($importSession->full_path_csv, function($number, $line) use ($importSession, &$submission_data, $mapped_assoc) {
+            if(($importSession->hasHeader && $number > 1) || (!$importSession->hasHeader)){
+                $mapped_line = [];
+                foreach($mapped_assoc as $property_name => $column_number){
+                    if(isset($line[$column_number])){
+                        $mapped_line[$property_name] = $line[$column_number];    
                     }
-                    $line_counter++;
-                }
-            }catch(\Exception $ex){ 
-            }finally{
-                fclose($handle);    
+                } 
+                $submission_data[] = $mapped_line;
             }
+        });  
+
+        //since there's a limit of 500 entities per insert,
+        //let's divide it into 200 entities per insert
+        $chunks = collect($submission_data)->chunk(200);
+        $job_id = time();
+
+        foreach($chunks as $key => $chunk){
+            dispatch(new \App\Jobs\UploadData($importSession->kind, $chunk, $job_id));
         }
 
-        \App\GDSHelper::insertMany($importSession->kind, $submission_data);
+        //save counter to cache
+        $counter = new \App\UploadDataCounter();
+        $counter->id = $job_id;
+        $counter->total = count($chunks);
+        $counter->processed = 0;
+        $counter->file = $importSession->csvFile;
+        $counter->kind = $importSession->kind;
+        $counter->saveCache();
 
         //done, remove cache
         $request->session()->forget(ImportCSVSession::$cacheName);
@@ -179,6 +191,11 @@ class SchemaController extends Controller
 
     public function cancelImport(Request $request)
     {
+
+        $importSession = ImportCSVSession::fromSession($request);  
+        if($importSession != null && $importSession->csvFileExists()){
+            $importSession->deleteCsvFile();
+        }
         $request->session()->forget(ImportCSVSession::$cacheName);
         return redirect("/kinds/import");
     }
