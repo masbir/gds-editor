@@ -26,11 +26,11 @@
 @stop
 @section('content')
     <h2>Map CSV</h1>
-    <div class="alert alert-info" role="alert">
+    <!--<div class="alert alert-info" role="alert">
         You're importing <strong>{{ $importSession->originalFileName }}</strong> to <strong>{{ $importSession->kind }}</strong>
 
         <a href="/kinds/import/cancel" class="btn btn-danger">Cancel Import</a>
-    </div>
+    </div>-->
     <form method="POST" enctype="multipart/form-data">
         {{ csrf_field() }} 
 
