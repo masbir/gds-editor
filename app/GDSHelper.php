@@ -9,7 +9,11 @@ class GDSHelper extends Model
 
     public static function fetchExistingKinds()
     { 
-        return static::fetchKinds("__kind__");
+        $kinds = static::fetchKinds("__kind__");
+        //filter system "kinds"
+        return collect($kinds)->filter(function($kind){
+            return !starts_with($kind->getKeyName(), "__");
+        })->all();
     }
 
     public static function fetchProperties($kind)
