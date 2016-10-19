@@ -85,6 +85,9 @@ class SchemaController extends Controller
             $importSession->originalFileName = $request->file('csvFile')->getClientOriginalName(); 
             $csvFile = $request->csvFile->store('imported-csv');
             $importSession->csvFile = $csvFile;
+
+            //normalize line endings
+            file_put_contents( $importSession->full_path_csv, preg_replace('~\R~u', "\r\n", file_get_contents($importSession->full_path_csv)) );
         }
 
         //persist data in session
