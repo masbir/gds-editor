@@ -15,7 +15,12 @@
         $("#table-props").on("click", ".btn-delete-row", function(ev){
             ev.preventDefault();
             $(this).closest("tr").remove();
-        })
+        }).on("click", ".dropdown-menu a", function(ev){
+            ev.preventDefault();
+            $(this).closest('.dropdown')
+                .find('.prop-input')
+                .val($(this).attr('data-value'));
+        }); 
     });
     </script>
 @stop
@@ -47,8 +52,16 @@
         			@foreach($properties as $propKey => $property)
         			<tr id="property-{{ $propKey }}">
         				<td>
-        					<input class="prop-input form-control" type="hidden" name="properties[]" value="{{ $property }}" />
-        					<span class="prop-label">{{ $property }}</span>
+                            <div class="input-group dropdown">
+                                <input class="prop-input form-control" type="text" name="properties[]" value="{{ $property }}" />
+
+                                <ul class="dropdown-menu">
+                                    @foreach($properties as $properySelector) 
+                                        <li><a href="#" data-value="{{ $properySelector }}">{{ $properySelector }}</a></li>
+                                    @endforeach
+                                </ul> 
+                                <span role="button" class="input-group-addon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></span>
+        					</div> 
         				</td>
         				<td>
         					<select class="form-control col-select" name="mappedColumns[]"> 
@@ -62,7 +75,7 @@
 							</select>
         				</td>
                         <td>
-                            <button class="btn btn-danger btn-delete-row">&times;</button>
+                            <button class="btn btn-danger btn-delete-row" type="button">&times;</button>
                         </td>
         			</tr>
         			@endforeach

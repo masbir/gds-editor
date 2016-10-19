@@ -1,5 +1,18 @@
 @extends('layouts.simple') 
+@section('scripts')
+	<script>
+		$(function(){
+			$(".dropdown-menu a").click(function(ev){
+				ev.preventDefault();
+	            $(this).closest('.dropdown')
+	                .find('.target-input')
+	                .val($(this).attr('data-value'));
+	        }); 
+		})
+	</script>
+@stop
 @section('content')
+
     <h2>Import CSV</h1>
     <form method="POST" enctype="multipart/form-data">
         {{ csrf_field() }} 
@@ -14,11 +27,18 @@
 
 		<div class="form-group {{ $errors->has('kind') ? 'has-error' : '' }}">
 			<label for="kind">Kind</label>
-			<select class="form-control" id="kind" name="kind">
-				@foreach($kinds as $kind)
-					<option value="{{ $kind->getKeyName() }}" {{ (old("kind") == $kind->getKeyName() ? 'selected' : '') }}>{{ $kind->getKeyName() }}</option>
-				@endforeach
-			</select>
+
+			<div class="input-group dropdown">
+                <input class="target-input form-control" type="text" name="kind" value="{{ old("kind") }}" />
+
+                <ul class="dropdown-menu">
+                    @foreach($kinds as $kind)
+                        <li><a href="#" data-value="{{ $kind->getKeyName() }}">{{ $kind->getKeyName() }}</a></li>
+                    @endforeach
+                </ul> 
+                <span role="button" class="input-group-addon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></span>
+			</div> 
+
 			@if ($errors->has('kind')) 
 				<p class="help-block">{{ $errors->first('kind') }}</p> 
 			@endif
