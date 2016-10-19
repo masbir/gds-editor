@@ -4,6 +4,7 @@
 		<div class="panel-heading clearfix">
 			<div class="pull-right">
 				<a class="btn btn-default" href="/kinds/insert">Insert</a>
+				<a class="btn btn-default" href="/kinds/import">Import CSV</a>
 			</div>
 			Kinds
 		</div> 
