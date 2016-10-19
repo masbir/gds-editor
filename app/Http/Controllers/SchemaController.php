@@ -171,7 +171,8 @@ class SchemaController extends Controller
         $job_id = time();
 
         foreach($chunks as $key => $chunk){
-            dispatch(new \App\Jobs\UploadData($importSession->kind, $chunk, $job_id));
+            $job = (new \App\Jobs\UploadData($importSession->kind, $chunk, $job_id))->onQueue('importing');
+            dispatch($job);
         }
 
         //save counter to cache

@@ -34,8 +34,8 @@ class UploadData implements ShouldQueue
      */
     public function handle()
     {
-        sleep(10);
-        //\App\GDSHelper::insertMany($this->kind, $this->data);
+        //sleep(10);
+        \App\GDSHelper::insertMany($this->kind, $this->data);
 
         $counter = new \App\UploadDataCounter();
         $counter->id = $this->id; 
