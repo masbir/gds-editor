@@ -204,16 +204,16 @@ class SchemaController extends Controller
     public function getCachedKinds()
     {
         //\Cache::forget("kinds");
-        return \Cache::remember("kinds", 60, function(){
+        //return \Cache::remember("kinds", 60, function(){
             return \App\GDSHelper::fetchExistingKinds();
-        });
+        //});
     }
 
     public function getCachedProperties($kind)
     {
         //\Cache::forget($kind . ".properties");
-        return \Cache::remember($kind . ".properties", 60, function() use ($kind){
+        //return \Cache::remember($kind . ".properties", 60, function() use ($kind){
             return \App\GDSHelper::fetchProperties($kind);
-        });
+        //});
     }
 }
