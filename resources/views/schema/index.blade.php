@@ -1,5 +1,16 @@
 @extends('layouts.simple')
 @section('content')
+	@if(count($processing) > 0)
+		<div class="alert alert-info">
+			@foreach($processing as $processing_item)
+				<div>
+					{{ ($processing_item->pct) }}% - 
+					Importing <strong>{{ $processing_item->file }}</strong> to <strong>{{ $processing_item->kind }}</strong>
+				</div>
+			@endforeach
+		</div>
+	@endif
+
 	<div class="panel panel-default">
 		<div class="panel-heading clearfix">
 			<div class="pull-right">
