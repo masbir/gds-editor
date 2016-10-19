@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class GDSHelper extends Model
 {   
+
+    public static function fetchExistingKinds()
+    { 
+        return static::fetchKinds("__kind__");
+    }
+
+    public static function fetchProperties($kind)
+    { 
+        $store = static::createDefaultStore("__Stat_PropertyType_PropertyName_Kind__");     
+        return $store->query("SELECT * FROM __Stat_PropertyType_PropertyName_Kind__ WHERE kind_name = '" . $kind . "'")->fetchAll();
+    }
+
     public static function insert($name, $properties, $store = null)
     {
     	if($store == null){
