@@ -26,7 +26,7 @@
 		</div>
 
 		<div class="form-group {{ $errors->has('kind') ? 'has-error' : '' }}">
-			<label for="kind">Kind</label>
+			<label for="kind">Kind <small class="text-muted">Create or select existing</small></label>
 
 			<div class="input-group dropdown">
                 <input class="target-input form-control" type="text" name="kind" value="{{ old("kind") }}" />
@@ -37,7 +37,7 @@
                     @endforeach
                 </ul> 
                 <span role="button" class="input-group-addon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></span>
-			</div> 
+			</div>  
 
 			@if ($errors->has('kind')) 
 				<p class="help-block">{{ $errors->first('kind') }}</p> 
