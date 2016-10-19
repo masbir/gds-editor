@@ -23,6 +23,16 @@ class ImportCSVSession extends Model
     	return storage_path("app/" . $this->csvFile);
     }
 
+    public function csvFileExists()
+    {
+        return file_exists($this->full_path_csv);
+    }
+
+    public function deleteCsvFile()
+    {
+        return unlink($this->full_path_csv);
+    }
+
     public static function fromSession($request)
     {
     	$name = static::$cacheName;
