@@ -118,7 +118,12 @@ class SchemaController extends Controller
         //existing kind properties
         $properties_raw = $this->getCachedProperties($importSession->kind);
         if(count($properties_raw) == 0){
-            $properties = ["Property 1"];
+            if($importSession->hasHeader){
+                $properties = $importSession->header;
+            }else{
+                $properties = ["Property 1"];
+            }
+            
         }else{
             $properties = collect($properties_raw)->map(function($item){
                 return $item->getData()["property_name"];
