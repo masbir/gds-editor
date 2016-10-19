@@ -187,7 +187,7 @@ class SchemaController extends Controller
         //done, remove cache
         $request->session()->forget(ImportCSVSession::$cacheName);
 
-        return redirect("/kinds/" . $importSession->kind);
+        return redirect("/");
     }
 
     public function cancelImport(Request $request)
